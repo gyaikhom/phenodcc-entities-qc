@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CitedDataPoint.findById", query = "SELECT c FROM CitedDataPoint c WHERE c.id = :id"),
     @NamedQuery(name = "CitedDataPoint.findByIssueId", query = "SELECT c FROM CitedDataPoint c WHERE c.issueId = :issueId"),
     @NamedQuery(name = "CitedDataPoint.countByIssueId", query = "SELECT COUNT(c) FROM CitedDataPoint c WHERE c.issueId = :issueId"),
-    @NamedQuery(name = "CitedDataPoint.measurementsByIssueId", query = "SELECT new org.mousephenotype.dcc.entities.qc.CitedMeasurement(m.animalId, c.measurementId) FROM CitedDataPoint c, MeasurementsPerformed m WHERE (c.measurementId = m.measurementId AND c.issueId = :issueId)"),
+    @NamedQuery(name = "CitedDataPoint.measurementsByIssueId", query = "SELECT new org.mousephenotype.dcc.entities.qc.CitedMeasurement(c.animalId, c.measurementId) FROM CitedDataPoint c WHERE c.issueId = :issueId"),
     @NamedQuery(name = "CitedDataPoint.findByMeasurementId", query = "SELECT c FROM CitedDataPoint c WHERE c.measurementId = :measurementId")})
 public class CitedDataPoint implements Serializable {
 
@@ -57,6 +57,9 @@ public class CitedDataPoint implements Serializable {
     @Basic(optional = false)
     @Column(name = "measurement_id", nullable = false)
     private long measurementId;
+    @Basic(optional = false)
+    @Column(name = "animal_id", nullable = false)
+    private Integer animalId;
     @JoinColumn(name = "issue_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private AnIssue issueId;
@@ -68,9 +71,10 @@ public class CitedDataPoint implements Serializable {
     public CitedDataPoint() {
     }
 
-    public CitedDataPoint(AnIssue issueId, long measurementId) {
+    public CitedDataPoint(AnIssue issueId, long measurementId, Integer animalId) {
         this.issueId = issueId;
         this.measurementId = measurementId;
+        this.animalId = animalId;
     }
 
     public Long getId() {
@@ -87,6 +91,14 @@ public class CitedDataPoint implements Serializable {
 
     public void setMeasurementId(long measurementId) {
         this.measurementId = measurementId;
+    }
+
+    public Integer getAnimalId() {
+        return animalId;
+    }
+
+    public void setAnimalId(Integer animalId) {
+        this.animalId = animalId;
     }
 
     public AnIssue getIssueId() {

@@ -251,6 +251,7 @@ create table cited_data_point (
        id bigint unsigned not null auto_increment,
        issue_id bigint unsigned not null, /* the issue associated with the data point */
        measurement_id bigint unsigned not null, /* the measurement identifier */
+       animal_id int unsigned not null, /* animal that corresponds to measured value */
        last_update timestamp not null default current_timestamp on update current_timestamp,
        index (issue_id),
        index (measurement_id),

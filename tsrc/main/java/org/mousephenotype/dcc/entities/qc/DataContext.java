@@ -60,7 +60,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DataContext.findByCidLidGidSid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid)"),
     @NamedQuery(name = "DataContext.findByCidLidGidSidPid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid)"),
     @NamedQuery(name = "DataContext.findByCidLidGidSidPidQid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.qid = :qid)"),
-    @NamedQuery(name = "DataContext.findByContext", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.qid = :qid)")})
+    @NamedQuery(name = "DataContext.findByContext", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.qid = :qid)"),
+    @NamedQuery(name = "DataContext.findProceduresWithData", query = "SELECT DISTINCT d.pid FROM DataContext d WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.numMeasurements > 0)"),
+    @NamedQuery(name = "DataContext.findProceduresWithDataForCentre", query = "SELECT DISTINCT d.pid FROM DataContext d WHERE (d.cid = :cid AND d.numMeasurements > 0)"),
+    @NamedQuery(name = "DataContext.findParametersWithData", query = "SELECT DISTINCT d.qid FROM DataContext d WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.numMeasurements > 0)")
+})
 public class DataContext implements Serializable {
 
     @Id
