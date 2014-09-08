@@ -41,12 +41,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "history", catalog = "PHENODCC_QC_DATABASE_NAME", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h"),
-    @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
-    @NamedQuery(name = "History.findByContextId", query = "SELECT new org.mousephenotype.dcc.entities.qc.HistoryEntry(h.id, h.actionedBy, h.actionType.shortName, h.stateId.shortName, h.actionId, h.issueId, h.lastUpdate) FROM History h WHERE h.contextId.id = :contextId ORDER BY h.lastUpdate"),
-    @NamedQuery(name = "History.findByActionedBy", query = "SELECT h FROM History h WHERE h.actionedBy = :actionedBy"),
-    @NamedQuery(name = "History.findByLastUpdate", query = "SELECT h FROM History h WHERE h.lastUpdate = :lastUpdate"),
-    @NamedQuery(name = "History.findByActionType", query = "SELECT h FROM History h WHERE h.actionType = :actionType")})
+    @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h WHERE h.isDeleted = 0"),
+    @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE (h.isDeleted = 0 AND h.id = :id)"),
+    @NamedQuery(name = "History.findByContextId", query = "SELECT new org.mousephenotype.dcc.entities.qc.HistoryEntry(h.id, h.actionedBy, h.actionType.shortName, h.stateId.shortName, h.actionId, h.issueId, h.lastUpdate) FROM History h WHERE (h.isDeleted = 0 AND h.contextId.id = :contextId) ORDER BY h.lastUpdate"),
+    @NamedQuery(name = "History.findByActionedBy", query = "SELECT h FROM History h WHERE (h.isDeleted = 0 AND h.actionedBy = :actionedBy)"),
+    @NamedQuery(name = "History.findByLastUpdate", query = "SELECT h FROM History h WHERE (h.isDeleted = 0 AND h.lastUpdate = :lastUpdate)"),
+    @NamedQuery(name = "History.findByActionType", query = "SELECT h FROM History h WHERE (h.isDeleted = 0 AND h.actionType = :actionType)"),
+    @NamedQuery(name = "History.findByIssueId", query = "SELECT h FROM History h WHERE (h.isDeleted = 0 AND h.issueId IS NOT NULL AND h.issueId = :issueId)")})
 public class History implements Serializable {
 
     @Id
@@ -76,6 +77,9 @@ public class History implements Serializable {
     @JoinColumn(name = "issue_id", referencedColumnName = "id", nullable = true)
     @ManyToOne(cascade = CascadeType.ALL, optional = true)
     private AnIssue issueId;
+    @Basic(optional = false)
+    @Column(name = "is_deleted", nullable = false)
+    private int isDeleted;
     
     public History() {
     }
@@ -89,6 +93,7 @@ public class History implements Serializable {
         this.contextId = contextId;
         this.actionId = actionId;
         this.issueId = issueId;
+        this.isDeleted = 0;
     }
 
     public Long getId() {
@@ -154,4 +159,13 @@ public class History implements Serializable {
     public void setIssueId(AnIssue issueId) {
         this.issueId = issueId;
     }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
 }

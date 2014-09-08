@@ -128,6 +128,7 @@ create table an_issue (
        raised_by int unsigned not null, /* who raised the issue */
        assigned_to int unsigned not null, /* who is resolving the issue */
        last_update timestamp not null default current_timestamp on update current_timestamp,
+       is_deleted tinyint unsigned not null default 0, /* if 1, record has been marked as deleted */
        index (context_id),
        index (title),
        index (priority),
@@ -172,7 +173,8 @@ insert into action_type(cid, short_name, description)
     (7, 'adddata', 'New measurements were added'),
     (8, 'removedata', 'Measurements were removed'),
     (9, 'changedata', 'Measurements were updated'),
-    (10, 'qcdone', 'No more QC issues with the data context');
+    (10, 'qcdone', 'No more QC issues with the data context'),
+    (11, 'deleteissue', 'Delete an issue and associated actions');
 
 /**
  * Every action is defined by what action was carried out, who carried out the
@@ -211,6 +213,7 @@ create table history (
        issue_id bigint unsigned, /* if action is related to an issue */
        action_id bigint unsigned, /* associated action */
        last_update timestamp not null default current_timestamp on update current_timestamp,
+       is_deleted tinyint unsigned not null default 0, /* if 1, record has been marked as deleted */
        primary key (id),
        index (context_id),
        foreign key (context_id) references data_context(id) on update cascade on delete restrict,

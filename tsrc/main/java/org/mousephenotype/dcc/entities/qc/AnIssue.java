@@ -44,16 +44,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "an_issue", catalog = "PHENODCC_QC_DATABASE_NAME", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AnIssue.findAll", query = "SELECT a FROM AnIssue a ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findById", query = "SELECT a FROM AnIssue a WHERE a.id = :id"),
-    @NamedQuery(name = "AnIssue.findByTitle", query = "SELECT a FROM AnIssue a WHERE a.title = :title"),
-    @NamedQuery(name = "AnIssue.findByPriority", query = "SELECT a FROM AnIssue a WHERE a.priority = :priority ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findByLastUpdate", query = "SELECT a FROM AnIssue a WHERE a.lastUpdate = :lastUpdate"),
-    @NamedQuery(name = "AnIssue.findByContextId", query = "SELECT a FROM AnIssue a WHERE a.contextId.id = :contextId ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findByAssignedTo", query = "SELECT a FROM AnIssue a WHERE a.assignedTo = :assignedTo ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findByRaisedBy", query = "SELECT a FROM AnIssue a WHERE a.raisedBy = :raisedBy ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findByStatus", query = "SELECT a FROM AnIssue a WHERE a.status = :status ORDER BY a.lastUpdate DESC"),
-    @NamedQuery(name = "AnIssue.findByCentreId", query = "SELECT a FROM AnIssue a, DataContext d WHERE (a.contextId = d AND d.cid = :centreId) ORDER BY a.lastUpdate DESC")
+    @NamedQuery(name = "AnIssue.findAll", query = "SELECT a FROM AnIssue a WHERE a.isDeleted = 0 ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findById", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.id = :id)"),
+    @NamedQuery(name = "AnIssue.findByTitle", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.title = :title)"),
+    @NamedQuery(name = "AnIssue.findByPriority", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.priority = :priority) ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findByLastUpdate", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.lastUpdate = :lastUpdate)"),
+    @NamedQuery(name = "AnIssue.findByContextId", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.contextId.id = :contextId) ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findByAssignedTo", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.assignedTo = :assignedTo) ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findByRaisedBy", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.raisedBy = :raisedBy) ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findByStatus", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.status = :status) ORDER BY a.lastUpdate DESC"),
+    @NamedQuery(name = "AnIssue.findByCentreId", query = "SELECT a FROM AnIssue a, DataContext d WHERE (a.isDeleted = 0 AND a.contextId = d AND d.cid = :centreId) ORDER BY a.lastUpdate DESC")
 })
 public class AnIssue implements Serializable {
 
@@ -88,6 +88,9 @@ public class AnIssue implements Serializable {
     private Collection<AnAction> anActionCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "issueId")
     private Collection<CitedDataPoint> citedDataPointsCollection;
+    @Basic(optional = false)
+    @Column(name = "is_deleted", nullable = false)
+    private int isDeleted;
 
     public AnIssue() {
     }
@@ -188,5 +191,13 @@ public class AnIssue implements Serializable {
 
     public void setCitedDataPointsCollection(Collection<CitedDataPoint> citedDataPointsCollection) {
         this.citedDataPointsCollection = citedDataPointsCollection;
+    }
+
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }
