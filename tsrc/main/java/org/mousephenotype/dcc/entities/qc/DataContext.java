@@ -52,18 +52,18 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DataContext.findBySid", query = "SELECT d FROM DataContext d WHERE d.sid = :sid"),
     @NamedQuery(name = "DataContext.findByPid", query = "SELECT d FROM DataContext d WHERE d.pid = :pid"),
     @NamedQuery(name = "DataContext.findByQid", query = "SELECT d FROM DataContext d WHERE d.qid = :qid"),
-    @NamedQuery(name = "DataContext.findProcedureState", query = "SELECT new org.mousephenotype.dcc.entities.qc.StateAndUnresolvedIssuesCount(MAX(d.stateId.cid), SUM(d.numIssues - d.numResolved)) FROM DataContext d, Parameter p WHERE (d.cid = :centreId AND d.lid = :pipelineId AND d.gid = :genotypeId AND d.sid = :strainId AND d.pid = :procedureId AND d.qid = p.parameterId AND p.type != 'procedureMetadata' AND p.graphType IS NOT NULL AND (d.qid != 2100 OR (d.pid = 103 AND d.qid = 2100))) GROUP BY d.pid"),
+    @NamedQuery(name = "DataContext.findProcedureState", query = "SELECT new org.mousephenotype.dcc.entities.qc.StateAndUnresolvedIssuesCount(MAX(d.stateId.cid), SUM(d.numIssues - d.numResolved)) FROM DataContext d join Parameter p on (d.qid = p.parameterId) WHERE (d.cid = :centreId AND d.lid = :pipelineId AND d.gid = :genotypeId AND d.sid = :strainId AND d.pid = :procedureId AND p.graphType IS NOT NULL AND (d.qid != 2100 OR (d.pid = 103 AND d.qid = 2100)) AND p.type != 'procedureMetadata' AND (d.pid NOT IN (select DISTINCT ip.procedureId FROM IgnoreProcedures ip))) GROUP BY d.pid"),
     @NamedQuery(name = "DataContext.findParameterState", query = "SELECT new org.mousephenotype.dcc.entities.qc.StateAndUnresolvedIssuesCount(MAX(d.stateId.cid), SUM(d.numIssues - d.numResolved)) FROM DataContext d WHERE (d.cid = :centreId AND d.lid = :pipelineId AND d.gid = :genotypeId AND d.sid = :strainId AND d.pid = :procedureId AND d.qid = :parameterId) GROUP BY d.qid"),
-    @NamedQuery(name = "DataContext.getStatusAndCountQcIssues", query = "SELECT new org.mousephenotype.dcc.entities.qc.StateAndUnresolvedIssuesCount(MAX(d.stateId.cid), SUM(d.numIssues - d.numResolved)) FROM DataContext d, Parameter p WHERE (d.cid = :centreId AND d.gid = :genotypeId AND d.sid = :strainId AND d.qid = p.parameterId AND p.parameterKey = :parameterId)"),
+    @NamedQuery(name = "DataContext.getStatusAndCountQcIssues", query = "SELECT new org.mousephenotype.dcc.entities.qc.StateAndUnresolvedIssuesCount(MAX(d.stateId.cid), SUM(d.numIssues - d.numResolved)) FROM DataContext d join Parameter p on (d.qid = p.parameterId) WHERE (d.cid = :centreId AND d.gid = :genotypeId AND d.sid = :strainId AND d.qid = p.parameterId AND p.parameterKey = :parameterId AND (d.pid NOT IN (select DISTINCT ip.procedureId FROM IgnoreProcedures ip)))"),
     @NamedQuery(name = "DataContext.getWithMeasurements", query = "SELECT c from DataContext c WHERE (c.numMeasurements > 0)"),
     @NamedQuery(name = "DataContext.findByCidLidGid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid)"),
     @NamedQuery(name = "DataContext.findByCidLidGidSid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid)"),
     @NamedQuery(name = "DataContext.findByCidLidGidSidPid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid)"),
     @NamedQuery(name = "DataContext.findByCidLidGidSidPidQid", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.qid = :qid)"),
     @NamedQuery(name = "DataContext.findByContext", query = "SELECT d FROM DataContext d WHERE (d.cid = :cid AND d.lid = :lid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.qid = :qid)"),
-    @NamedQuery(name = "DataContext.findProceduresWithData", query = "SELECT DISTINCT d.pid FROM DataContext d WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.numMeasurements > 0)"),
-    @NamedQuery(name = "DataContext.findProceduresWithDataForCentre", query = "SELECT DISTINCT d.pid FROM DataContext d WHERE (d.cid = :cid AND d.numMeasurements > 0)"),
-    @NamedQuery(name = "DataContext.findParametersWithData", query = "SELECT DISTINCT d.qid FROM DataContext d WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.numMeasurements > 0)")
+    @NamedQuery(name = "DataContext.findProceduresWithData", query = "SELECT DISTINCT d.pid FROM DataContext d left join IgnoreProcedures ip on (ip.procedureId = d.pid) WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.numMeasurements > 0 and ip.procedureId is null)"),
+    @NamedQuery(name = "DataContext.findProceduresWithDataForCentre", query = "SELECT DISTINCT d.pid FROM DataContext d left join IgnoreProcedures ip on (ip.procedureId = d.pid) WHERE (d.cid = :cid AND d.numMeasurements > 0 and ip.procedureId is null)"),
+    @NamedQuery(name = "DataContext.findParametersWithData", query = "SELECT DISTINCT d.qid FROM DataContext d left join IgnoreProcedures ip on (ip.procedureId = d.pid) WHERE (d.cid = :cid AND d.gid = :gid AND d.sid = :sid AND d.pid = :pid AND d.numMeasurements > 0 and ip.procedureId is null)")
 })
 public class DataContext implements Serializable {
 
@@ -120,7 +120,13 @@ public class DataContext implements Serializable {
     public DataContext() {
     }
 
-    public DataContext(Integer cid, Integer lid, Integer gid, Integer sid, Integer pid, Integer qid) {
+    public DataContext(
+            Integer cid,
+            Integer lid,
+            Integer gid,
+            Integer sid,
+            Integer pid,
+            Integer qid) {
         this.cid = cid;
         this.lid = lid;
         this.gid = gid;

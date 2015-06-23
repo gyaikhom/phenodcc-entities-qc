@@ -84,9 +84,13 @@ public class History implements Serializable {
     public History() {
     }
 
-    public History(DataContext contextId, int actionedBy,
-            ActionType actionType, AState stateId,
-            AnAction actionId, AnIssue issueId) {
+    public History(
+            DataContext contextId,
+            int actionedBy,
+            ActionType actionType,
+            AState stateId,
+            AnAction actionId,
+            AnIssue issueId) {
         this.actionedBy = actionedBy;
         this.actionType = actionType;
         this.stateId = stateId;

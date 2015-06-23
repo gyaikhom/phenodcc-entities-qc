@@ -37,12 +37,16 @@ public class StateAndUnresolvedIssuesCount implements Serializable {
     public StateAndUnresolvedIssuesCount() {
     }
 
-    public StateAndUnresolvedIssuesCount(Short stateId, Long numUnresolved) {
+    public StateAndUnresolvedIssuesCount(
+            Short stateId,
+            Long numUnresolved) {
         this.stateId = stateId;
         this.numUnresolved = numUnresolved;
     }
 
-    public StateAndUnresolvedIssuesCount(Short stateId, Integer numUnresolved) {
+    public StateAndUnresolvedIssuesCount(
+            Short stateId,
+            Integer numUnresolved) {
         this.stateId = stateId;
         this.numUnresolved = numUnresolved.longValue();
     }

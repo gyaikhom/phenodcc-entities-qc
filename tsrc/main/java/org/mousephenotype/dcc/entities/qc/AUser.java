@@ -106,7 +106,18 @@ public class AUser implements Serializable {
         this.uid = uid;
     }
 
-    public AUser(Integer uid, String name, String pass, String theme, String signature, int created, int access, int login, short status, String language, int picture) {
+    public AUser(
+            Integer uid,
+            String name,
+            String pass,
+            String theme,
+            String signature,
+            int created,
+            int access,
+            int login,
+            short status,
+            String language,
+            int picture) {
         this.uid = uid;
         this.name = name;
         this.pass = pass;

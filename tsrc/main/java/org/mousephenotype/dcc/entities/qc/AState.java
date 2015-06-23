@@ -82,7 +82,12 @@ public class AState implements Serializable {
         this.id = id;
     }
 
-    public AState(Short id, short cid, String shortName, String description, Date lastUpdate) {
+    public AState(
+            Short id,
+            short cid,
+            String shortName,
+            String description,
+            Date lastUpdate) {
         this.id = id;
         this.cid = cid;
         this.shortName = shortName;

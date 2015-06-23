@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AnAction.findByLastUpdate", query = "SELECT a FROM AnAction a WHERE a.lastUpdate = :lastUpdate"),
     @NamedQuery(name = "AnAction.findByActionedBy", query = "SELECT a FROM AnAction a WHERE a.actionedBy = :actionedBy"),
     @NamedQuery(name = "AnAction.findByActionType", query = "SELECT a FROM AnAction a WHERE a.actionType = :actionType"),
-    @NamedQuery(name = "AnAction.findByIssueId", query = "SELECT a FROM AnAction a WHERE a.issueId = :issueId")})
+    @NamedQuery(name = "AnAction.findByIssueId", query = "SELECT a FROM AnAction a WHERE a.issueId = :issueId ORDER BY a.id DESC")})
 public class AnAction implements Serializable {
 
     @Id
@@ -75,7 +75,11 @@ public class AnAction implements Serializable {
     public AnAction() {
     }
 
-    public AnAction(ActionType actionType, Integer actionedBy, String title, String description) {
+    public AnAction(
+            ActionType actionType,
+            Integer actionedBy,
+            String title,
+            String description) {
         this.actionType = actionType;
         this.actionedBy = actionedBy;
         this.description = description;

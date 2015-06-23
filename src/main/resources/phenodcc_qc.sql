@@ -28,7 +28,8 @@ create table a_state (
        description varchar(255) not null, /* what does the state mean? */
        last_update timestamp not null default current_timestamp on update current_timestamp,
        primary key (id),
-       unique(cid)
+       unique(cid),
+       unique (short_name)
 ) engine = innodb;
 
 /**
@@ -124,6 +125,7 @@ create table an_issue (
        context_id bigint unsigned not null, /* the data context id */
        title varchar(256) not null, /* the subject title of the issue */
        priority tinyint unsigned not null, /* the priority for resolution */
+       control_setting int unsigned not null default 5186017, /* visualisation control setting */
        status tinyint unsigned not null, /* the status of the issue */
        raised_by int unsigned not null, /* who raised the issue */
        assigned_to int unsigned not null, /* who is resolving the issue */

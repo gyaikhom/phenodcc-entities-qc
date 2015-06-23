@@ -71,7 +71,10 @@ public class CitedDataPoint implements Serializable {
     public CitedDataPoint() {
     }
 
-    public CitedDataPoint(AnIssue issueId, long measurementId, Integer animalId) {
+    public CitedDataPoint(
+            AnIssue issueId,
+            long measurementId,
+            Integer animalId) {
         this.issueId = issueId;
         this.measurementId = measurementId;
         this.animalId = animalId;

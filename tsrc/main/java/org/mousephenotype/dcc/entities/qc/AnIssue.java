@@ -69,6 +69,9 @@ public class AnIssue implements Serializable {
     @Column(nullable = false)
     private short priority;
     @Basic(optional = false)
+    @Column(name = "control_setting", nullable = false)
+    private Integer controlSetting;
+    @Basic(optional = false)
     @Column(name = "last_update", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", nullable = false, insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
@@ -133,6 +136,14 @@ public class AnIssue implements Serializable {
 
     public void setPriority(short priority) {
         this.priority = priority;
+    }
+
+    public Integer getControlSetting() {
+        return controlSetting;
+    }
+
+    public void setControlSetting(Integer controlSetting) {
+        this.controlSetting = controlSetting;
     }
 
     public Date getLastUpdate() {

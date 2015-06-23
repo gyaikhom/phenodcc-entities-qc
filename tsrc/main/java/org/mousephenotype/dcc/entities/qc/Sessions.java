@@ -68,7 +68,12 @@ public class Sessions implements Serializable {
         this.sessionsPK = sessionsPK;
     }
 
-    public Sessions(SessionsPK sessionsPK, int uid, String hostname, int timestamp, int cache) {
+    public Sessions(
+            SessionsPK sessionsPK,
+            int uid,
+            String hostname,
+            int timestamp,
+            int cache) {
         this.sessionsPK = sessionsPK;
         this.uid = uid;
         this.hostname = hostname;
