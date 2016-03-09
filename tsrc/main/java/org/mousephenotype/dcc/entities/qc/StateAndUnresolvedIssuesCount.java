@@ -16,10 +16,12 @@
 package org.mousephenotype.dcc.entities.qc;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -33,22 +35,19 @@ public class StateAndUnresolvedIssuesCount implements Serializable {
     private Long id;
     private Short stateId;
     private Long numUnresolved;
-
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date lastUpdate;
+    
     public StateAndUnresolvedIssuesCount() {
     }
 
     public StateAndUnresolvedIssuesCount(
             Short stateId,
-            Long numUnresolved) {
+            Long numUnresolved,
+            Date lastUpdate) {
         this.stateId = stateId;
         this.numUnresolved = numUnresolved;
-    }
-
-    public StateAndUnresolvedIssuesCount(
-            Short stateId,
-            Integer numUnresolved) {
-        this.stateId = stateId;
-        this.numUnresolved = numUnresolved.longValue();
+        this.lastUpdate = lastUpdate;
     }
     
     public Long getId() {
@@ -73,6 +72,14 @@ public class StateAndUnresolvedIssuesCount implements Serializable {
 
     public void setNumUnresolved(Long numUnresolved) {
         this.numUnresolved = numUnresolved;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
 }

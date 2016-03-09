@@ -55,7 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AnIssue.findByStatus", query = "SELECT a FROM AnIssue a WHERE (a.isDeleted = 0 AND a.status = :status) ORDER BY a.lastUpdate DESC"),
     @NamedQuery(name = "AnIssue.findByCentreId", query = "SELECT a FROM AnIssue a, DataContext d WHERE (a.isDeleted = 0 AND a.contextId = d AND d.cid = :centreId) ORDER BY a.lastUpdate DESC")
 })
-public class AnIssue implements Serializable {
+public class AnIssue implements Serializable, Comparable<AnIssue> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -210,5 +210,26 @@ public class AnIssue implements Serializable {
 
     public void setIsDeleted(int isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    @Override
+    public int compareTo(AnIssue another) {
+        int a = this.status.getCid();
+        int b = another.status.getCid();
+
+        /* this is to force down resolved issues at the bottom */
+        if ("resolved".equals(this.status.getShortName())) {
+            a = 100;
+        }
+        if ("resolved".equals(another.status.getShortName())) {
+            b = 100;
+        }
+        if (a < b) {
+            return -1;
+        } else if (a > b) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
